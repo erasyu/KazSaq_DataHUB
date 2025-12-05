@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -9,17 +10,25 @@ import 'package:kazsaq_datahub/providers/ai_provider.dart';
 import 'package:kazsaq_datahub/providers/news_provider.dart';
 import 'package:kazsaq_datahub/utils/groq_config.dart';
 import 'package:kazsaq_datahub/screens/main_navigation_screen.dart';
+import 'package:kazsaq_datahub/screens/splash_screen.dart';
+import 'package:kazsaq_datahub/services/data_import_service.dart';
 import 'package:kazsaq_datahub/utils/app_colors.dart';
 import 'package:kazsaq_datahub/utils/app_text_styles.dart';
 import 'package:kazsaq_datahub/utils/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await initializeDateFormatting('ru', null);
+  
+  // Показываем splash screen сразу
   runApp(const MyApp());
+  
+  // Инициализируем Firebase асинхронно
+  Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  ).then((_) {
+    initializeDateFormatting('ru', null);
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -95,8 +104,68 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        home: const MainNavigationScreen(),
+        home: const SplashWrapper(),
       ),
     );
+  }
+}
+
+class SplashWrapper extends StatefulWidget {
+  const SplashWrapper({super.key});
+
+  @override
+  State<SplashWrapper> createState() => _SplashWrapperState();
+}
+
+class _SplashWrapperState extends State<SplashWrapper> {
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    // Ждем инициализации Firebase
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await initializeDateFormatting('ru', null);
+    
+    // Автоматически обновляем данные университетов, если их меньше 20
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('universities')
+          .limit(21)
+          .get();
+      
+      if (snapshot.docs.length < 20) {
+        // Импортируем данные в фоне
+        final importService = DataImportService();
+        importService.addUniversities().catchError((e) {
+          debugPrint('Ошибка автоматического импорта: $e');
+        });
+      }
+    } catch (e) {
+      debugPrint('Ошибка проверки данных: $e');
+    }
+    
+    // Небольшая задержка для плавности
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    if (mounted) {
+      setState(() {
+        _isInitialized = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return const SplashScreen();
+    }
+    return const MainNavigationScreen();
   }
 }

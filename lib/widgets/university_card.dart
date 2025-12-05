@@ -67,6 +67,8 @@ class UniversityCard extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 4),
+                            _buildUniversityTypeChip(),
                           ],
                         ),
                       ),
@@ -250,6 +252,83 @@ class UniversityCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildUniversityTypeChip() {
+    String typeLabel = _getUniversityTypeLabel(university.universityType);
+    IconData typeIcon = _getUniversityTypeIcon(university.universityType);
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(typeIcon, size: 12, color: AppColors.primary),
+          const SizedBox(width: 4),
+          Text(
+            typeLabel,
+            style: AppTextStyles.caption.copyWith(
+              color: AppColors.primary,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getUniversityTypeLabel(String type) {
+    switch (type) {
+      case 'technical':
+        return 'Технический';
+      case 'medical':
+        return 'Медицинский';
+      case 'pedagogical':
+        return 'Педагогический';
+      case 'economic':
+        return 'Экономический';
+      case 'humanitarian':
+        return 'Гуманитарный';
+      case 'agricultural':
+        return 'Аграрный';
+      case 'arts':
+        return 'Искусств';
+      case 'military':
+        return 'Военный';
+      case 'comprehensive':
+        return 'Комплексный';
+      default:
+        return 'Университет';
+    }
+  }
+
+  IconData _getUniversityTypeIcon(String type) {
+    switch (type) {
+      case 'technical':
+        return Icons.engineering;
+      case 'medical':
+        return Icons.medical_services;
+      case 'pedagogical':
+        return Icons.school;
+      case 'economic':
+        return Icons.account_balance;
+      case 'humanitarian':
+        return Icons.menu_book;
+      case 'agricultural':
+        return Icons.agriculture;
+      case 'arts':
+        return Icons.palette;
+      case 'military':
+        return Icons.security;
+      case 'comprehensive':
+        return Icons.business;
+      default:
+        return Icons.school;
+    }
   }
 }
 

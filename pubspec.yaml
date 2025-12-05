@@ -37,6 +37,7 @@ dependencies:
   expandable: ^5.0.1
   flutter_launcher_icons: ^0.13.1
   http: ^1.2.2
+  google_maps_flutter: ^2.5.0
 
 dev_dependencies:
   flutter_test:

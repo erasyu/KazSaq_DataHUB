@@ -28,10 +28,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    // Загружаем данные асинхронно после первого кадра
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UniversityProvider>().loadUniversities();
-      context.read<NewsProvider>().loadNews();
+      _loadData();
     });
+  }
+
+  Future<void> _loadData() async {
+    // Загружаем данные параллельно для ускорения
+    await Future.wait([
+      context.read<UniversityProvider>().loadUniversities(),
+      context.read<NewsProvider>().loadNews(),
+    ]);
   }
 
   @override

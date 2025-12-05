@@ -359,13 +359,38 @@ class _AiAssistantScreenState extends State<AiAssistantScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('API ключ Groq'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            hintText: 'Введите API ключ',
-            border: OutlineInputBorder(),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Для получения API ключа:',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '1. Перейдите на https://console.groq.com\n'
+                '2. Зарегистрируйтесь или войдите в аккаунт\n'
+                '3. Создайте новый API ключ\n'
+                '4. Скопируйте ключ и вставьте ниже',
+                style: AppTextStyles.bodySmall,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  hintText: 'Введите API ключ',
+                  border: OutlineInputBorder(),
+                  labelText: 'API ключ Groq',
+                ),
+                obscureText: false,
+                autofocus: true,
+              ),
+            ],
           ),
-          obscureText: true,
         ),
         actions: [
           TextButton(
@@ -377,6 +402,12 @@ class _AiAssistantScreenState extends State<AiAssistantScreen> {
               if (controller.text.trim().isNotEmpty) {
                 context.read<AiProvider>().setApiKey(controller.text.trim());
                 Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('API ключ успешно сохранен!'),
+                    backgroundColor: AppColors.primary,
+                  ),
+                );
               }
             },
             child: const Text('Сохранить'),

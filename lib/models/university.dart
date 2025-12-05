@@ -27,6 +27,10 @@ class University {
   final InternationalCooperation internationalCooperation;
   final Admission admission;
   final String? tour3dUrl;
+  final String universityType;
+  final double? latitude;
+  final double? longitude;
+  final String? googleMapsPlaceId;
 
   University({
     required this.id,
@@ -55,7 +59,11 @@ class University {
     required this.internationalCooperation,
     required this.admission,
     this.tour3dUrl,
-  });
+    String? universityType,
+    this.latitude,
+    this.longitude,
+    this.googleMapsPlaceId,
+  }) : universityType = universityType ?? 'comprehensive';
 
   factory University.fromMap(String id, Map<String, dynamic> map) {
     return University(
@@ -94,6 +102,10 @@ class University {
           InternationalCooperation.fromMap(map['internationalCooperation'] ?? {}),
       admission: Admission.fromMap(map['admission'] ?? {}),
       tour3dUrl: map['tour3dUrl'],
+      universityType: map['universityType'],
+      latitude: map['latitude'] != null ? (map['latitude'] as num).toDouble() : null,
+      longitude: map['longitude'] != null ? (map['longitude'] as num).toDouble() : null,
+      googleMapsPlaceId: map['googleMapsPlaceId'],
     );
   }
 
@@ -124,6 +136,10 @@ class University {
       'internationalCooperation': internationalCooperation.toMap(),
       'admission': admission.toMap(),
       'tour3dUrl': tour3dUrl,
+      'universityType': universityType,
+      'latitude': latitude,
+      'longitude': longitude,
+      'googleMapsPlaceId': googleMapsPlaceId,
     };
   }
 }
@@ -435,6 +451,7 @@ class AcademicProgram {
   final List<String> careerOpportunitiesRu;
   final List<String> careerOpportunitiesKz;
   final String imageUrl;
+  final String programCategory;
 
   AcademicProgram({
     required this.id,
@@ -463,7 +480,8 @@ class AcademicProgram {
     required this.careerOpportunitiesRu,
     required this.careerOpportunitiesKz,
     required this.imageUrl,
-  });
+    String? programCategory,
+  }) : programCategory = programCategory ?? 'general';
 
   factory AcademicProgram.fromMap(Map<String, dynamic> map) {
     return AcademicProgram(
@@ -495,6 +513,7 @@ class AcademicProgram {
       careerOpportunitiesKz:
           List<String>.from(map['careerOpportunitiesKz'] ?? []),
       imageUrl: map['imageUrl'] ?? '',
+      programCategory: map['programCategory'],
     );
   }
 
@@ -526,6 +545,7 @@ class AcademicProgram {
       'careerOpportunitiesRu': careerOpportunitiesRu,
       'careerOpportunitiesKz': careerOpportunitiesKz,
       'imageUrl': imageUrl,
+      'programCategory': programCategory,
     };
   }
 }

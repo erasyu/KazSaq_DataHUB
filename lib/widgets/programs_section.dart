@@ -152,6 +152,8 @@ class _ProgramCard extends StatelessWidget {
                                 color: AppColors.primary,
                               ),
                             ),
+                            const SizedBox(height: 4),
+                            _buildCategoryChip(),
                           ],
                         ),
                       ),
@@ -310,6 +312,51 @@ class _ProgramCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildCategoryChip() {
+    String categoryLabel = _getCategoryLabel(program.programCategory);
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        categoryLabel,
+        style: AppTextStyles.caption.copyWith(
+          color: AppColors.primary,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  String _getCategoryLabel(String category) {
+    switch (category) {
+      case 'engineering':
+        return 'Инженерия';
+      case 'medicine':
+        return 'Медицина';
+      case 'business':
+        return 'Бизнес';
+      case 'law':
+        return 'Право';
+      case 'education':
+        return 'Образование';
+      case 'arts':
+        return 'Искусство';
+      case 'science':
+        return 'Наука';
+      case 'agriculture':
+        return 'Сельское хозяйство';
+      case 'humanitarian':
+        return 'Гуманитарные';
+      default:
+        return 'Общее';
+    }
   }
 }
 
